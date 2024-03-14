@@ -40,7 +40,7 @@ jobs:
          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       with:
         args: >
-            -Dsonar.projectKey=my_project_key
+            -Dsonar.projectKey=ssk_project
             -Dsonar.sources=.
-            -Dsonar.host.url=http://your-sonarqube-url:9000
+            -Dsonar.host.url=http://3.110.156.64:9000
             -Dsonar.login=$SONAR_TOKEN
