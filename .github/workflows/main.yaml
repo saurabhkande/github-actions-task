@@ -30,17 +30,19 @@ jobs:
     - name: Cache SonarQube packages
       uses: actions/cache@v1
       with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
-    
-    - name: SonarQube Scan
-      uses: "SonarSource/sonarqube-scan-action@v1"
-      env:
-         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        path: ~/.sonar/cache
+        key: ${{ runner.os }}-sonar
+        restore-keys: ${{ runner.os }}-sonar
+
+    - name: Cache Maven packages
+      uses: actions/cache@v1
       with:
-        args: >
-            -Dsonar.projectKey=ssk_project
-            -Dsonar.sources=.
-            -Dsonar.host.url=http://3.110.156.64:9000
-            -Dsonar.login=$SONAR_TOKEN
+        path: ~/.m2
+        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+        restore-keys: ${{ runner.os }}-m2
+    - name: Build and analyze
+      env:
+        GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}  # Needed to get PR information, if any
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=123sk
